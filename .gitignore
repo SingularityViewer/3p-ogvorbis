@@ -1,3 +1,7 @@
 *.suo
 *.user
 *.sdf
+*Static_Debug
+*Static_Release
+stage
+ogg_vorbis-*.tar.bz2
