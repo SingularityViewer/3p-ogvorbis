@@ -27,13 +27,23 @@ top="$(pwd)"
 stage="$(pwd)/stage"
 
 case "$AUTOBUILD_PLATFORM" in
-    "windows")
+    windows*)
+        if [ "$AUTOBUILD_PLATFORM" == "windows64" ]; then
+            build_target="x64"
+        else
+            build_target="Win32"
+        fi
+        if [ "$AUTOBUILD_VSVER" -gt "100" ]; then
+            proj_suffix=".vcxproj"
+        else
+            proj_suffix=""
+        fi
         pushd "$OGG_SOURCE_DIR"
 
         packages="$(cygpath -m "$stage/packages")"
 
-        build_sln "win32/ogg.sln" "Debug|Win32" "ogg_static"
-        build_sln "win32/ogg.sln" "Release|Win32" "ogg_static"
+        build_sln "win32/ogg.sln" "Debug|$build_target" "ogg_static$proj_suffix"
+        build_sln "win32/ogg.sln" "Release|$build_target" "ogg_static$proj_suffix"
 
         mkdir -p "$stage/lib"/{debug,release}
         cp "win32/Static_Debug/ogg_static_d.lib" "$stage/lib/debug/ogg_static_d.lib"
@@ -47,12 +57,12 @@ case "$AUTOBUILD_PLATFORM" in
         popd
         pushd "$VORBIS_SOURCE_DIR"
         
-        build_sln "win32/vorbis.sln" "Debug|Win32" "vorbis_static"
-        build_sln "win32/vorbis.sln" "Release|Win32" "vorbis_static"
-        build_sln "win32/vorbis.sln" "Debug|Win32" "vorbisenc_static"
-        build_sln "win32/vorbis.sln" "Release|Win32" "vorbisenc_static"
-        build_sln "win32/vorbis.sln" "Debug|Win32" "vorbisfile_static"
-        build_sln "win32/vorbis.sln" "Release|Win32" "vorbisfile_static"
+        build_sln "win32/vorbis.sln" "Debug|$build_target" "vorbis_static$proj_suffix"
+        build_sln "win32/vorbis.sln" "Release|$build_target" "vorbis_static$proj_suffix"
+        build_sln "win32/vorbis.sln" "Debug|$build_target" "vorbisenc_static$proj_suffix"
+        build_sln "win32/vorbis.sln" "Release|$build_target" "vorbisenc_static$proj_suffix"
+        build_sln "win32/vorbis.sln" "Debug|$build_target" "vorbisfile_static$proj_suffix"
+        build_sln "win32/vorbis.sln" "Release|$build_target" "vorbisfile_static$proj_suffix"
         
         cp "win32/Vorbis_Static_Debug/vorbis_static_d.lib" "$stage/lib/debug/vorbis_static_d.lib"
         cp "win32/Vorbis_Static_Debug/vc100.pdb" "$stage/lib/debug/vorbis_static_d.pdb"
